@@ -13,7 +13,7 @@ User = get_user_model()
 class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    lookup_field = "username"
+    lookup_field = "pk"
 
     def get_permissions(self):
         if self.action == "create":
