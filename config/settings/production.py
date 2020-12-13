@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from .base import *  # noqa
 from .base import env
 
@@ -139,14 +137,3 @@ LOGGING = {
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-SWAGGER_SETTINGS = {
-    "USE_SESSION_AUTH": False,
-    "SECURITY_DEFINITIONS": {
-        "Token": {"type": "apiKey", "name": "Authorization", "in": "header"}
-    },
-}
-
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
-    "ROTATE_REFRESH_TOKENS": True,
-}
