@@ -6,15 +6,13 @@ from jirabas.users.models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username", "email", "name", "url", "password"]
-
-        extra_kwargs = {
-            "url": {"view_name": "api:user-detail", "lookup_field": "username"}
-        }
+        fields = ["username", "email", "name", "password"]
 
     password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
+        # TODO: Проверка и корректная обработка кейса с уже существующим юзернеймом
+
         user = User(**validated_data)
         # Hash the user's password.
         user.set_password(validated_data["password"])
