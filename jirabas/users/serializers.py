@@ -1,7 +1,6 @@
-from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-User = get_user_model()
+from jirabas.users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -12,3 +11,10 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "url": {"view_name": "api:user-detail", "lookup_field": "username"}
         }
+
+    def create(self, validated_data):
+        user = User(**validated_data)
+        # Hash the user's password.
+        user.set_password(validated_data["password"])
+        user.save()
+        return user
