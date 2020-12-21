@@ -5,3 +5,5 @@ POSTGRES_PORT=5432
 POSTGRES_DB=jirabas
 POSTGRES_USER=fPwazKlQKNLkBVrIDkYIPLUYmBIRIPIr
 POSTGRES_PASSWORD=00o0fWjlpgqcyHkFNSJiRmuEgnhX5DSm1iWrVgZmWAZPYPkBvDLjey5J6gw2oNuf
+
+# DATABASE_URL=postgres://postgres:postgres@localhost:5432/jirabas
