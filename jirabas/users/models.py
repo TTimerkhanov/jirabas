@@ -1,5 +1,5 @@
 from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField, Model, TextField, ForeignKey, DateTimeField, CASCADE, IntegerField, SET_NULL
+from django.db.models import CharField, Model, TextField, ForeignKey, DateTimeField, CASCADE, IntegerField
 from django.utils.translation import gettext_lazy as _
 
 
