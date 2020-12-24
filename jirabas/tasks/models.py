@@ -1,6 +1,5 @@
 from django.db.models import (
     CASCADE,
-    SET_NULL,
     CharField,
     DateTimeField,
     ForeignKey,
@@ -11,7 +10,7 @@ from django.db.models import (
 from django.utils import timezone
 from rest_framework.fields import FloatField
 
-from jirabas.users.enums import PriorityTask, StatusTask, TypeTask
+from jirabas.tasks.enums import PriorityTask, RelationType, StatusTask, TypeTask
 from jirabas.users.models import Role, User
 
 
@@ -105,14 +104,26 @@ class Task(Model):
         null=True,
         verbose_name="Performer of task",
     )
-    parent_task = ForeignKey(
-        "Task",
+
+
+class TasksRelation(Model):
+    from_task = ForeignKey(
+        Task,
         related_name="child_tasks",
-        on_delete=SET_NULL,
-        blank=True,
-        null=True,
-        verbose_name="Parent task",
+        on_delete=CASCADE,
+        blank=False,
+        null=False,
     )
+
+    to_task = ForeignKey(
+        Task,
+        related_name="parent_tasks",
+        on_delete=CASCADE,
+        blank=False,
+        null=False,
+    )
+
+    relation_type = IntegerField(choices=RelationType.choices)
 
 
 class Comment(Model):

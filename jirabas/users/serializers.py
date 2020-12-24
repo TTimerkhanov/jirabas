@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from jirabas.users.models import User
+from jirabas.users.models import Role, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -18,3 +18,24 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data["password"])
         user.save()
         return user
+
+
+class UserShortInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username", "email", "name"]
+        read_only_fields = ["id", "username", "email", "name"]
+
+
+class UserProjectInfoSerializer(serializers.Serializer):
+    id = serializers.CharField(read_only=True)
+    username = serializers.CharField(read_only=True)
+    email = serializers.CharField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    role = serializers.CharField(read_only=True)
+
+
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = "__all__"
