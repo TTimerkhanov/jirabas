@@ -3,8 +3,6 @@ from collections import defaultdict
 from django.db import IntegrityError
 from django.http import JsonResponse
 from django_filters import rest_framework as filters
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -17,8 +15,7 @@ from jirabas.tasks.serializers import (
     ProjectSerializer,
     ProjectUserSerializer,
     TaskSerializer,
-    TasksRelationCategoriesSerializer,
-    TasksSimpleCategorySerializer)
+    TasksRelationCategoriesSerializer)
 from jirabas.users.serializers import UserProjectInfoSerializer
 
 
