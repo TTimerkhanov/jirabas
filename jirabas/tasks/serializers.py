@@ -82,6 +82,10 @@ class TaskShortSerializer(serializers.Serializer):
         return StatusTask(value.status).label
 
 
+class TasksSimpleCategorySerializer(serializers.Serializer):
+    tasks = serializers.ListField(child=TaskShortSerializer())
+
+
 class TasksRelationCategorySerializer(serializers.Serializer):
     relation_type = serializers.CharField()
     tasks = serializers.ListField(child=TaskShortSerializer())
