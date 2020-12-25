@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django_filters import rest_framework as filters
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -17,6 +18,7 @@ from jirabas.tasks.serializers import (
     TaskSerializer,
     TasksRelationCategoriesSerializer,
 )
+from jirabas.users.models import Role
 from jirabas.users.serializers import UserProjectInfoSerializer
 
 
@@ -33,8 +35,14 @@ class ProjectViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         project = self.get_object()
+        membership = get_object_or_404(
+            ProjectMembership, member=request.user, project=project
+        )
 
         try:
+            if membership.role != Role.get_project_manager():
+                return JsonResponse(data={"error": "Недостаточно прав для добавления пользователя к проекту"})
+
             ProjectMembership.objects.create(
                 project=project,
                 member_id=serializer.data["user"],
@@ -53,6 +61,12 @@ class ProjectViewSet(ModelViewSet):
         project = self.get_object()
         serializer = ProjectRoleSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        membership = get_object_or_404(
+            ProjectMembership, member=request.user, project=project
+        )
+
+        if membership.role != Role.get_project_manager():
+            return JsonResponse(data={"error": "Недостаточно прав для изменения роли в проекте"})
 
         ProjectMembership.objects.filter(
             project=project, member_id=serializer.data["user"]
@@ -65,6 +79,12 @@ class ProjectViewSet(ModelViewSet):
         project = self.get_object()
         serializer = ProjectUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        membership = get_object_or_404(
+            ProjectMembership, member=request.user, project=project
+        )
+
+        if membership.role != Role.get_project_manager():
+            return JsonResponse(data={"error": "Недостаточно прав для удаления пользователя из проекта"})
 
         ProjectMembership.objects.filter(
             project=project, member_id=serializer.data["user"]
