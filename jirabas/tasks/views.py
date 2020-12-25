@@ -96,7 +96,7 @@ class TaskViewSet(ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ("performer", "project")
+    filterset_fields = ("performer", "creator", "project")
 
     @action(
         detail=True, methods=["get"], serializer_class=TasksRelationCategoriesSerializer
@@ -120,21 +120,4 @@ class TaskViewSet(ModelViewSet):
         transformed_data = [{"relation_type": k, "tasks": v} for k, v in data.items()]
 
         data = TasksRelationCategoriesSerializer({"relations": transformed_data}).data
-        return JsonResponse(data={"results": data})
-
-    @swagger_auto_schema(manual_parameters=[openapi.Parameter('by_filter',
-                                                              openapi.IN_QUERY,
-                                                              description="Filter by creator or performer tasks",
-                                                              type=openapi.TYPE_STRING)],
-                         responses={status.HTTP_200_OK: TasksSimpleCategorySerializer()})
-    @action(detail=False, methods=["get"])
-    def my_tasks(self, request):
-        current_filter = request.query_params.get("by_filter")
-        if current_filter == "performer":
-            data = request.user.performer_tasks.all().order_by("-date_created")
-        elif current_filter == "creator":
-            data = request.user.creator_tasks.all().order_by("-date_created")
-        else:
-            return Response(status.HTTP_404_NOT_FOUND)
-        data = TasksSimpleCategorySerializer({"tasks": data}).data
         return JsonResponse(data={"results": data})
