@@ -33,9 +33,6 @@ class UserViewSet(ModelViewSet):
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
 
-    def get_queryset(self, *args, **kwargs):
-        return self.queryset.filter(id=self.request.user.id)
-
     @swagger_auto_schema(responses={status.HTTP_200_OK: UserShortInfoSerializer()})
     @action(detail=False, methods=["GET"])
     def me(self, request):
