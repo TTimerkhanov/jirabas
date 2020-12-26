@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, Serializer
 
 from jirabas.tasks.enums import PriorityTask, RelationType, StatusTask, TypeTask
-from jirabas.tasks.models import Project, ProjectMembership, Task, TasksRelation
+from jirabas.tasks.models import Project, ProjectMembership, Task
 from jirabas.users.models import Role, User
 
 
@@ -37,32 +37,22 @@ class TaskSerializer(ModelSerializer):
     class Meta:
         model = Task
         fields = "__all__"
-        read_only_fields = ("creator",)
-
-    relation_type = serializers.ChoiceField(
-        choices=RelationType.choices, required=False
-    )
-    relative_task = serializers.PrimaryKeyRelatedField(
-        queryset=Task.objects.all(), required=False
-    )
+        read_only_fields = ("creator", "date_created", "custom_number")
 
     def create(self, validated_data):
-        relation_type, relative_task = None, None
-
-        if "relation_type" in validated_data:
-            relation_type = validated_data.pop("relation_type")
-        if "relative_task" in validated_data:
-            relative_task = validated_data.pop("relative_task")
+        project = validated_data["project"]
+        number = project.tasks.all().count()
 
         validated_data["creator"] = self.context["request"].user
+        validated_data["custom_number"] = f"{project.short_name}-{number}"
         task = super(TaskSerializer, self).create(validated_data)
 
-        if relation_type and relative_task:
-            TasksRelation.objects.create(
-                from_task=task, to_task=relative_task, relation_type=relation_type
-            )
-
         return task
+
+
+class ConnectTasksSerializer(serializers.Serializer):
+    to_task = serializers.PrimaryKeyRelatedField(queryset=Task.objects.all())
+    relation_type = serializers.ChoiceField(choices=RelationType.choices)
 
 
 class TaskShortSerializer(serializers.Serializer):

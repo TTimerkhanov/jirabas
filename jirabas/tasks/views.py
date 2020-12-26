@@ -11,6 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 from jirabas.tasks.enums import RelationType
 from jirabas.tasks.models import Project, ProjectMembership, Task, TasksRelation
 from jirabas.tasks.serializers import (
+    ConnectTasksSerializer,
     ProjectRoleSerializer,
     ProjectSerializer,
     ProjectUserSerializer,
@@ -119,3 +120,16 @@ class TaskViewSet(ModelViewSet):
 
         data = TasksRelationCategoriesSerializer({"relations": transformed_data}).data
         return JsonResponse(data={"results": data})
+
+    @action(detail=True, methods=["post"], serializer_class=ConnectTasksSerializer)
+    def connect(self, request, pk=None):
+        serializer = ConnectTasksSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        TasksRelation.objects.create(
+            from_task=self.get_object(),
+            to_task=serializer.validated_data["to_task"],
+            relation_type=serializer.validated_data["relation_type"],
+        )
+
+        return JsonResponse(data=serializer.data)
