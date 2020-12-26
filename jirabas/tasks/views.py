@@ -16,8 +16,7 @@ from jirabas.tasks.serializers import (
     ProjectSerializer,
     ProjectUserSerializer,
     TaskSerializer,
-    TasksRelationCategoriesSerializer,
-)
+    TasksRelationCategoriesSerializer)
 from jirabas.users.serializers import UserProjectInfoSerializer
 
 
@@ -95,7 +94,7 @@ class TaskViewSet(ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ("performer", "project")
+    filterset_fields = ("performer", "creator", "project")
 
     @action(
         detail=True, methods=["get"], serializer_class=TasksRelationCategoriesSerializer
