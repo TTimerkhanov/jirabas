@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django_filters import rest_framework as filters
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -25,6 +26,7 @@ from jirabas.users.serializers import UserProjectInfoSerializer, UserSerializer
 class ProjectViewSet(ModelViewSet):
     serializer_class = ProjectSerializer
     lookup_field = "pk"
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return Project.objects.filter(members__member=self.request.user)
