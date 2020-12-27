@@ -106,7 +106,13 @@ class TaskViewSet(ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ("performer", "creator", "project")
+    filterset_fields = (
+        "performer",
+        "creator",
+        "project",
+        "type",
+        "status",
+    )
 
     @action(
         detail=True, methods=["get"], serializer_class=TasksRelationCategoriesSerializer
