@@ -157,7 +157,8 @@ class Comment(Model):
 
 
 class LogTimeTask(Model):
-    hours = FloatField(null=False, default=0.0)
+    hours = FloatField(blank=False, default=0.0)
+
     date_logged = DateTimeField(
         "Date of logging", blank=False, null=False, default=timezone.now
     )
@@ -180,8 +181,8 @@ class LogTimeTask(Model):
     )
 
     def __str__(self):
-        return "Logged time in minutes %s for task %s, user %s" % (
-            self.minutes,
+        return "Logged time in %s hours for task %s, user %s" % (
+            self.hours,
             self.task.custom_number,
             self.user,
         )

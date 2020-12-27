@@ -11,6 +11,7 @@ class User(AbstractUser):
 
 class Role(Model):
     name = CharField("Name", blank=False, max_length=255, unique=True, db_index=True)
+    abbreviation = CharField("Abbreviation", blank=True, max_length=3, db_index=True)
     description = TextField("Description", blank=True, max_length=700)
 
     def __str__(self):

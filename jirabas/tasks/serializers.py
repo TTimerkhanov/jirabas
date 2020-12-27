@@ -70,3 +70,12 @@ class TasksRelationCategorySerializer(serializers.Serializer):
 
 class TasksRelationCategoriesSerializer(serializers.Serializer):
     relations = serializers.ListField(child=TasksRelationCategorySerializer())
+
+
+class LogTimeTaskSerializer(ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), required=True
+    )
+    task = serializers.PrimaryKeyRelatedField(
+        queryset=Task.objects.all(), required=True
+    )
