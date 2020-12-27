@@ -28,8 +28,6 @@ class StatusTask(TextChoices):
     BEING_LATE = "LT", _("BEING_LATE")
     # на ревью
     REVIEW = "RV", _("REVIEW")
-    # закрыта
-    CLOSED = "CL", _("CLOSED")
 
 
 class PriorityTask(TextChoices):
