@@ -58,22 +58,13 @@ class ConnectTasksSerializer(serializers.Serializer):
 class TaskShortSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(read_only=True)
-    type = serializers.SerializerMethodField(read_only=True)
-    priority = serializers.SerializerMethodField(read_only=True)
-    status = serializers.SerializerMethodField(read_only=True)
-
-    def get_type(self, value):
-        return TypeTask(value.type).label
-
-    def get_priority(self, value):
-        return PriorityTask(value.priority).label
-
-    def get_status(self, value):
-        return StatusTask(value.status).label
+    type = serializers.ChoiceField(read_only=True, choices=TypeTask.choices)
+    priority = serializers.ChoiceField(read_only=True, choices=PriorityTask.choices)
+    status = serializers.ChoiceField(read_only=True, choices=StatusTask.choices)
 
 
 class TasksRelationCategorySerializer(serializers.Serializer):
-    relation_type = serializers.CharField()
+    relation_type = serializers.IntegerField()
     tasks = serializers.ListField(child=TaskShortSerializer())
 
 
