@@ -16,8 +16,10 @@ from jirabas.tasks.serializers import (
     ProjectSerializer,
     ProjectUserSerializer,
     TaskSerializer,
-    TasksRelationCategoriesSerializer)
-from jirabas.users.serializers import UserProjectInfoSerializer
+    TasksRelationCategoriesSerializer,
+)
+from jirabas.users.models import User
+from jirabas.users.serializers import UserProjectInfoSerializer, UserSerializer
 
 
 class ProjectViewSet(ModelViewSet):
@@ -82,11 +84,19 @@ class ProjectViewSet(ModelViewSet):
                 "name": entry.member.name,
                 "username": entry.member.username,
                 "email": entry.member.email,
-                "roles": entry.role.name,
+                "role": entry.role.name,
             }
             for entry in membership
         ]
 
+        return JsonResponse(data={"results": data})
+
+    @action(detail=True, methods=["get"])
+    def users_to_add(self, request, pk=None):
+        users = User.objects.exclude(
+            projects__project_id=self.kwargs[self.lookup_field]
+        )
+        data = UserSerializer(users, many=True).data
         return JsonResponse(data={"results": data})
 
 

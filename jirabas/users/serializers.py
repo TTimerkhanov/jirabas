@@ -6,7 +6,10 @@ from jirabas.users.models import Role, User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username", "email", "name", "password"]
+        fields = ["id", "username", "email", "name"]
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
 
     password = serializers.CharField(write_only=True)
 

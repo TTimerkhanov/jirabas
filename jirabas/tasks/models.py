@@ -2,13 +2,13 @@ from django.db.models import (
     CASCADE,
     CharField,
     DateTimeField,
+    FloatField,
     ForeignKey,
     IntegerField,
     Model,
     TextField,
 )
 from django.utils import timezone
-from rest_framework.fields import FloatField
 
 from jirabas.tasks.enums import PriorityTask, RelationType, StatusTask, TypeTask
 from jirabas.users.models import Role, User
@@ -157,7 +157,7 @@ class Comment(Model):
 
 
 class LogTimeTask(Model):
-    hours = FloatField(required=True, min_value=0.0)
+    hours = FloatField(null=False, default=0.0)
     date_logged = DateTimeField(
         "Date of logging", blank=False, null=False, default=timezone.now
     )
