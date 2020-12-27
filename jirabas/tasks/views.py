@@ -91,7 +91,7 @@ class ProjectViewSet(ModelViewSet):
             for entry in membership
         ]
 
-        return JsonResponse(data={"results": data})
+        return JsonResponse(data=data, safe=False)
 
     @action(detail=True, methods=["get"])
     def users_to_add(self, request, pk=None):
@@ -99,7 +99,7 @@ class ProjectViewSet(ModelViewSet):
             projects__project_id=self.kwargs[self.lookup_field]
         )
         data = UserSerializer(users, many=True).data
-        return JsonResponse(data={"results": data})
+        return JsonResponse(data=data, safe=False)
 
 
 class TaskViewSet(ModelViewSet):
