@@ -117,14 +117,14 @@ class ProjectViewSet(ModelViewSet):
                 "name": pm.member.name,
                 "username": pm.member.username,
                 "email": pm.member.email,
-                "role": pm.role.name,
+                "role": pm.role.abbreviation,
             },
             "users": [{
                 "id": entry.member.id,
                 "name": entry.member.name,
                 "username": entry.member.username,
                 "email": entry.member.email,
-                "role": entry.role.name,
+                "role": entry.role.abbreviation,
             }
                 for entry in membership]
         }
