@@ -19,7 +19,7 @@ from jirabas.tasks.serializers import (
     TaskSerializer,
     TasksRelationCategoriesSerializer,
 )
-from jirabas.users.models import User
+from jirabas.users.models import User, Role
 from jirabas.users.serializers import UserProjectInfoSerializer, UserSerializer
 
 
@@ -100,6 +100,35 @@ class ProjectViewSet(ModelViewSet):
         )
         data = UserSerializer(users, many=True).data
         return JsonResponse(data=data, safe=False)
+
+    @action(detail=True, methods=["get"])
+    def info(self, request, pk=None):
+        project = self.get_object()
+        pm = ProjectMembership.objects.filter(
+            project=project, role=Role.get_project_manager()
+        )[0]
+        membership = ProjectMembership.objects.filter(
+            project_id=self.kwargs[self.lookup_field]
+        ).select_related("member", "role").exclude(member=pm.member)
+        data = {
+            "project": ProjectSerializer(project).data,
+            "pm": {
+                "id": pm.member.id,
+                "name": pm.member.name,
+                "username": pm.member.username,
+                "email": pm.member.email,
+                "role": pm.role.name,
+            },
+            "users": [{
+                "id": entry.member.id,
+                "name": entry.member.name,
+                "username": entry.member.username,
+                "email": entry.member.email,
+                "role": entry.role.name,
+            }
+                for entry in membership]
+        }
+        return JsonResponse(data=data)
 
 
 class TaskViewSet(ModelViewSet):
