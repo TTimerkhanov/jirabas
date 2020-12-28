@@ -167,7 +167,7 @@ class TaskViewSet(ModelViewSet):
         for rel in to_relations:
             for row in TasksRelation.PAIRS:
                 if rel.relation_type in row:
-                    idx = 0 if row.index(rel) == 1 else 1
+                    idx = 0 if row.index(rel.relation_type) == 1 else 1
                     pair = row[idx]
                     data[pair.value].append(rel.from_task)
 
