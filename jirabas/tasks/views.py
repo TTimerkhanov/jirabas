@@ -19,7 +19,7 @@ from jirabas.tasks.serializers import (
     TaskSerializer,
     TasksRelationCategoriesSerializer,
 )
-from jirabas.users.models import User, Role
+from jirabas.users.models import Role, User
 from jirabas.users.serializers import UserProjectInfoSerializer, UserSerializer
 
 
@@ -107,9 +107,11 @@ class ProjectViewSet(ModelViewSet):
         pm = ProjectMembership.objects.filter(
             project=project, role=Role.get_project_manager()
         )[0]
-        membership = ProjectMembership.objects.filter(
-            project_id=self.kwargs[self.lookup_field]
-        ).select_related("member", "role").exclude(member=pm.member)
+        membership = (
+            ProjectMembership.objects.filter(project_id=self.kwargs[self.lookup_field])
+            .select_related("member", "role")
+            .exclude(member=pm.member)
+        )
         data = {
             "project": ProjectSerializer(project).data,
             "pm": {
@@ -119,14 +121,16 @@ class ProjectViewSet(ModelViewSet):
                 "email": pm.member.email,
                 "role": pm.role.abbreviation,
             },
-            "users": [{
-                "id": entry.member.id,
-                "name": entry.member.name,
-                "username": entry.member.username,
-                "email": entry.member.email,
-                "role": entry.role.abbreviation,
-            }
-                for entry in membership]
+            "users": [
+                {
+                    "id": entry.member.id,
+                    "name": entry.member.name,
+                    "username": entry.member.username,
+                    "email": entry.member.email,
+                    "role": entry.role.abbreviation,
+                }
+                for entry in membership
+            ],
         }
         return JsonResponse(data=data)
 
@@ -156,11 +160,13 @@ class TaskViewSet(ModelViewSet):
         for rel in from_relations:
             data[RelationType(rel.relation_type).value].append(rel.to_task)
 
+        # Нахоодим пару
         to_relations = TasksRelation.objects.filter(to_task=task).select_related(
             "from_task"
         )
         for rel in to_relations:
-            data[RelationType(rel.relation_type).value].append(rel.from_task)
+            key = TasksRelation.PAIRS.get(rel.relation_type)
+            data[RelationType(key).value].append(rel.from_task)
 
         transformed_data = [{"relation_type": k, "tasks": v} for k, v in data.items()]
 
