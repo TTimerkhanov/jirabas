@@ -165,8 +165,10 @@ class TaskViewSet(ModelViewSet):
             "from_task"
         )
         for rel in to_relations:
-            key = TasksRelation.PAIRS.get(rel.relation_type)
-            data[RelationType(key).value].append(rel.from_task)
+            if rel in TasksRelation.PAIRS:
+                idx = 0 if TasksRelation.PAIRS.index(rel) == 1 else 1
+                pair = TasksRelation.PAIRS[idx]
+                data[pair.value].append(rel.from_task)
 
         transformed_data = [{"relation_type": k, "tasks": v} for k, v in data.items()]
 

@@ -107,12 +107,12 @@ class Task(Model):
 
 
 class TasksRelation(Model):
-    PAIRS = {
-        RelationType.IS_BLOCKED_BY: RelationType.BLOCKS,
-        RelationType.IS_CLONED_BY: RelationType.CLONES,
-        RelationType.HAS_TEST_CASE: RelationType.COVERS_REQUIREMENT,
-        RelationType.RELATES: RelationType.RELATES,
-    }
+    PAIRS = (
+        (RelationType.IS_BLOCKED_BY, RelationType.BLOCKS),
+        (RelationType.IS_CLONED_BY, RelationType.CLONES),
+        (RelationType.HAS_TEST_CASE, RelationType.COVERS_REQUIREMENT),
+        (RelationType.RELATES, RelationType.RELATES),
+    )
 
     from_task = ForeignKey(
         Task,
