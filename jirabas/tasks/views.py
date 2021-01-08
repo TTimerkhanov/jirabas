@@ -150,7 +150,8 @@ class TaskViewSet(ModelViewSet):
 
     def get_queryset(self):
         Task.objects.filter(
-            deadline_date__gte=timezone.now(), status__in=OUTDATED_STATUSES
+            deadline_date__lte=timezone.now(),
+            status__in=OUTDATED_STATUSES
         ).update(status=StatusTask.IS_DELAYED)
 
         return Task.objects.all()

@@ -33,7 +33,6 @@ class StatusTask(TextChoices):
 OUTDATED_STATUSES = [
     StatusTask.BACKLOG,
     StatusTask.IN_PROGRESS,
-    StatusTask.IS_DELAYED,
     StatusTask.REVIEW,
 ]
 
