@@ -2,6 +2,7 @@ from collections import defaultdict
 
 from django.db import IntegrityError
 from django.http import JsonResponse
+from django.utils import timezone
 from django_filters import rest_framework as filters
 from rest_framework import status
 from rest_framework.decorators import action
@@ -9,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from jirabas.tasks.enums import RelationType
+from jirabas.tasks.enums import OUTDATED_STATUSES, RelationType, StatusTask
 from jirabas.tasks.models import Project, ProjectMembership, Task, TasksRelation
 from jirabas.tasks.serializers import (
     ConnectTasksSerializer,
@@ -146,6 +147,13 @@ class TaskViewSet(ModelViewSet):
         "type",
         "status",
     )
+
+    def get_queryset(self):
+        Task.objects.filter(
+            deadline_date__gte=timezone.now(), status__in=OUTDATED_STATUSES
+        ).update(status=StatusTask.IS_DELAYED)
+
+        return Task.objects.all()
 
     @action(
         detail=True, methods=["get"], serializer_class=TasksRelationCategoriesSerializer

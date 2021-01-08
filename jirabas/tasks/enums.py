@@ -30,6 +30,14 @@ class StatusTask(TextChoices):
     REVIEW = "RV", _("REVIEW")
 
 
+OUTDATED_STATUSES = [
+    StatusTask.BACKLOG,
+    StatusTask.IN_PROGRESS,
+    StatusTask.IS_DELAYED,
+    StatusTask.REVIEW,
+]
+
+
 class PriorityTask(TextChoices):
     HIGH = "HG", _("HIGH")
     MEDIUM = "MD", _("MEDIUM")
